@@ -1,22 +1,29 @@
 {
-  "name": "aaa",
+  "name": "nuxt-app",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "vue": "^3.3.11",
-    "vue-router": "^4.0.13"
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.5.2",
-    "autoprefixer": "^10.4.17",
-    "postcss": "^8.4.33",
-    "tailwindcss": "^3.4.1",
-    "vite": "^5.0.8"
+    "@nuxt/image": "^1.3.0",
+    "@nuxtjs/tailwindcss": "^6.11.2",
+    "@pinia/nuxt": "^0.5.1",
+    "nuxt": "^3.10.0",
+    "nuxt3-leaflet": "^1.0.12",
+    "vue": "^3.4.15",
+    "vue-router": "^4.2.5"
+  },
+  "dependencies": {
+    "@hebilicious/vue-query-nuxt": "^0.3.0",
+    "@tanstack/vue-query": "^5.29.0",
+    "axios": "^1.6.8",
+    "chart.js": "^4.4.2",
+    "leaflet": "^1.9.4",
+    "pinia": "^2.1.7"
   }
 }
