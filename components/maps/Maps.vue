@@ -17,7 +17,7 @@ export default {
       :zoom="zoom"
       :center="[-4.446935, 119.813054]"
       :maxZoom="maxZoom"
-      style="background-color: #272834"
+      style="background-color: #111216"
     >
       <LTileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

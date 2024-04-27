@@ -12,9 +12,9 @@
 .leaflet-control-zoom-in,
 .leaflet-control-zoom-out,
 .leaflet-control-attribution {
-  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(95%);
+  filter: invert(100%) hue-rotate(200deg) brightness(100%) contrast(100%);
 }
 
 .leaflet-container {
-  background-color: #272834;
+  background-color: #111216;
 }

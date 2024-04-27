@@ -14,8 +14,8 @@ export default {
 <template>
   <nuxt-link
     :to="item?.route"
-    class="flex p-4 hover:bg-[#51504D]"
-    :class="{ 'bg-[#51504D]': isActiveRoute(item?.route) }"
+    class="flex p-4 hover:bg-[#31312f]"
+    :class="{ 'bg-[#31312f]': isActiveRoute(item?.route) }"
   >
     <img
       :src="isActiveRoute(item?.route) ? item?.image : item?.inactiveImage"
@@ -24,7 +24,7 @@ export default {
     />
     <p
       class="flex flex-col justify-center pl-5 font-semibold"
-      :class="{ 'text-[#FFD369]': isActiveRoute(item?.route) }"
+      :class="{ 'text-[#8ED1FE]': isActiveRoute(item?.route) }"
     >
       {{ item?.title }}
     </p>
