@@ -12,5 +12,5 @@ export interface Statistic {
       maxDepth: number;
       minDepth: number;
     };
-  };
+  }[];
 }
