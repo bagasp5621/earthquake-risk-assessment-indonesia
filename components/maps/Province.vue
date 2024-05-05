@@ -1,7 +1,7 @@
 <template>
   <div
     class="relative h-[94.2vh] w-full overflow-hidden rounded-2xl bg-[]"
-    ref="Hazard"
+    ref="Province"
   ></div>
 </template>
 
@@ -12,11 +12,11 @@ import L from "leaflet";
 export default {
   setup() {
     // Initialize the map container reference
-    const Hazard = ref<HTMLDivElement | null>(null);
+    const Province = ref<HTMLDivElement | null>(null);
 
     onMounted(() => {
       // Create the Leaflet map instance
-      const map = L.map(Hazard.value!).setView([-4.44, 119.8], 5);
+      const map = L.map(Province.value!).setView([-4.44, 119.8], 5);
 
       // Add a tile layer to the map
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -38,7 +38,7 @@ export default {
       });
     });
 
-    return { Hazard };
+    return { Province };
   },
 };
 </script>
