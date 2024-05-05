@@ -1,4 +1,4 @@
-<script lang="ts">
+<script setup lang="ts">
 import type { SidebarContent, SidebarHeader } from "#build/components";
 </script>
 
