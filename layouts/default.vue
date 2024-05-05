@@ -3,8 +3,10 @@
     <div class="col-span-1">
       <AppSidebar />
     </div>
-    <div class="col-span-5 my-7 mr-7 rounded-2xl bg-[#1D1F25]">
-      <slot />
+    <div class="max-h-screen col-span-5 overflow-y-auto">
+      <div class="my-7 mr-7">
+        <slot />
+      </div>
     </div>
   </div>
 </template>

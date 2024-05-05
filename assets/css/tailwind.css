@@ -5,6 +5,7 @@
 @layer base {
   body {
     @apply font-nunito;
+    background-color: #111216;
   }
 }
 
@@ -16,5 +17,5 @@
 }
 
 .leaflet-container {
-  background-color: #111216;
+  background-color: #272834;
 }

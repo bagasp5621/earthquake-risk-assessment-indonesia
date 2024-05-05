@@ -1,9 +1,9 @@
 <script lang="ts">
-import type { Maps } from "#build/components";
+import type { MapsHazard } from "#build/components";
 </script>
 
 <template>
   <div>
-    <Maps />
+    <MapsHazard />
   </div>
 </template>
