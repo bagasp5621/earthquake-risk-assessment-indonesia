@@ -15,3 +15,7 @@
 .leaflet-control-attribution {
   filter: invert(100%) hue-rotate(200deg) brightness(100%) contrast(100%);
 }
+
+.leaflet-container {
+  background-color: #272834;
+}

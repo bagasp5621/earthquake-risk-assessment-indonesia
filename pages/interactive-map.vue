@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import type { Maps } from "#build/components";
+import type { MapsInteractive } from "#build/components";
+const isLoading = false;
 </script>
 
 <template>
   <div class="flex justify-center items-center">
-    <Maps />
+    <div v-if="isLoading">loading...</div>
+    <MapsInteractive v-else />
   </div>
 </template>

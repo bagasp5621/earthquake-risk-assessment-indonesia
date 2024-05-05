@@ -24,6 +24,7 @@
     "axios": "^1.6.8",
     "chart.js": "^4.4.2",
     "leaflet": "^1.9.4",
+    "leaflet.heat": "^0.2.0",
     "pinia": "^2.1.7",
     "vue-chartjs": "^5.3.1"
   }

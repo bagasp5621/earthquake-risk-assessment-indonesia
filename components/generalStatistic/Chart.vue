@@ -71,9 +71,9 @@ export default {
         chartData.labels = statisticsRaw.map((statistic) => statistic.label);
         chartData.datasets[0].data = statisticsRaw.map((statistic) => {
           switch (this.datasetStatistic) {
-            case "mag":
+            case "avgMag":
               return statistic.statistics.averageMagnitude;
-            case "depth":
+            case "avgDepth":
               return statistic.statistics.averageDepth;
             case "total":
               return statistic.statistics.totalEarthquakes;
@@ -91,25 +91,27 @@ export default {
 <template>
   <div class="my-5">
     <button
-      @click="datasetStatistic = 'mag'"
-      :class="{ 'bg-[#303D45] text-[#8ED1FE]': datasetStatistic === 'mag' }"
+      @click="datasetStatistic = 'avgMag'"
+      :class="{ 'bg-[#303D45] text-[#8ED1FE]': datasetStatistic === 'avgMag' }"
       class="py-2 px-5 border border-[#303D45] rounded-l-3xl"
     >
-      Magnitude
+      Avg. Magnitude
     </button>
     <button
-      @click="datasetStatistic = 'depth'"
-      :class="{ 'bg-[#303D45] text-[#8ED1FE]': datasetStatistic === 'depth' }"
+      @click="datasetStatistic = 'avgDepth'"
+      :class="{
+        'bg-[#303D45] text-[#8ED1FE]': datasetStatistic === 'avgDepth',
+      }"
       class="py-2 px-5 border border-[#303D45]"
     >
-      Depth
+      Avg. Depth
     </button>
     <button
       @click="datasetStatistic = 'total'"
       :class="{ 'bg-[#303D45] text-[#8ED1FE]': datasetStatistic === 'total' }"
       class="py-2 px-5 border border-[#303D45] rounded-r-3xl"
     >
-      Total
+      Total Earthquake
     </button>
   </div>
   <Bar id="earthquake-statistics" :options="chartOptions" :data="chartData" />
