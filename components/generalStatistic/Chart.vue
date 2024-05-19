@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { PropType } from "vue";
 import type { Statistic } from "~/types/Statistic";
 import { Bar } from "vue-chartjs";
 import {
@@ -27,7 +28,7 @@ export default {
   components: { Bar },
   props: {
     statistics: {
-      type: Object as PropType<Statistic | undefined>,
+      type: Object as PropType<Statistic | null>,
       required: true,
     },
   },
@@ -35,6 +36,7 @@ export default {
     return {
       chartOptions: {
         responsive: true,
+        normalized: true,
         scales: {
           x: {
             grid: {
@@ -51,38 +53,36 @@ export default {
           },
         },
       },
-
-      datasetStatistic: "mag",
+      datasetStatistic: "avgMag",
     };
   },
   computed: {
     chartData() {
       const statisticsRaw = toRaw(this.statistics)?.data;
-      const chartData = {
-        labels: [] as number[],
-        datasets: [
-          {
-            data: [] as number[],
-            backgroundColor: "#8ED1FE",
-          },
-        ],
-      };
-      if (statisticsRaw) {
-        chartData.labels = statisticsRaw.map((statistic) => statistic.label);
-        chartData.datasets[0].data = statisticsRaw.map((statistic) => {
-          switch (this.datasetStatistic) {
-            case "avgMag":
-              return statistic.statistics.averageMagnitude;
-            case "avgDepth":
-              return statistic.statistics.averageDepth;
-            case "total":
-              return statistic.statistics.totalEarthquakes;
-            default:
-              return statistic.statistics.averageMagnitude;
-          }
-        });
+      if (!statisticsRaw) return { labels: [], datasets: [] };
+
+      let labels = [];
+      let data = [];
+      for (const statistic of statisticsRaw) {
+        labels.push(statistic.label);
+        data.push(statistic.statistics.averageMagnitude);
+
+        switch (this.datasetStatistic) {
+          case "avgMag":
+            data.push(statistic.statistics.averageMagnitude);
+            break;
+          case "avgDepth":
+            data.push(statistic.statistics.averageDepth);
+            break;
+          case "total":
+            data.push(statistic.statistics.totalEarthquakes);
+            break;
+          default:
+            data.push(statistic.statistics.averageMagnitude);
+        }
       }
-      return chartData;
+
+      return { labels, datasets: [{ data, backgroundColor: "#8ED1FE" }] };
     },
   },
 };
