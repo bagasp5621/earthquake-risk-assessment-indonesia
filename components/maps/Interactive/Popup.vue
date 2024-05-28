@@ -44,12 +44,22 @@ export default {
 </script>
 
 <template>
-  <div v-if="isLoading">loading...</div>
+  <div v-if="isLoading" class="p-[5.2rem] px-[8.35rem]">
+    <LoadingSkeletonMaps />
+  </div>
   <div v-else>
-    {{ interactiveData }}
     <div>
-      <p>Latitude: {{ latitude }}</p>
-      <p>Longitude: {{ longitude }}</p>
+      Risk Level:
+      <span class="text-[#FF7E35] font-extrabold"
+        >{{ interactiveData?.risk }}!</span
+      >
+    </div>
+    <div>
+      Total Earthquake:
+      <span class="text-[#FF7E35] font-bold">{{ interactiveData?.count }}</span>
+    </div>
+    <div>
+      <MapsInteractiveChart :risk="interactiveData" />
     </div>
   </div>
 </template>
