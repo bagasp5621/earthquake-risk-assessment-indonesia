@@ -1,4 +1,5 @@
 export interface Interactive {
+  risk: string;
   count: number;
   dangerScore: {
     small: number;

@@ -118,8 +118,9 @@ export default {
       <div id="popup">
         <div v-if="isMounted" class="flex">
           <!-- content -->
-          <div class="bg-[#1D1F25] p-4 rounded-xl shadow-md">
-            <div class="flex justify-end">
+          <div class="bg-[#1D1F25] p-4 rounded-xl shadow-md flex">
+            <MapsInteractivePopup />
+            <div>
               <button
                 @click="removePopup"
                 class="py-[0.1rem] px-1.5 border rounded-lg hover:bg-[#4b5052] text-xs"
@@ -127,12 +128,14 @@ export default {
                 X
               </button>
             </div>
-            <MapsInteractivePopup />
           </div>
         </div>
         <!-- Loading Skeleton Here -->
-        <div v-else>loading...</div>
+        <div v-else>
+          <div class="h-[55.75rem]"><LoadingSkeletonMaps /></div>
+        </div>
       </div>
+      <!-- <div><LoadingSkeletonMaps /></div> -->
     </div>
   </div>
 </template>

@@ -8,8 +8,8 @@ export default {
         {
           image: "/maps-active.png",
           inactiveImage: "/maps.png",
-          title: "Interactive Map",
-          route: "/interactive-map",
+          title: "Risk Map",
+          route: "/risk-map",
         },
         {
           image: "/earthquake-active.png",
