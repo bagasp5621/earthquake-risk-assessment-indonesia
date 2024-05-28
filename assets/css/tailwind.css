@@ -5,16 +5,6 @@
 @layer base {
   body {
     @apply font-nunito;
+    background-color: #111216;
   }
-}
-
-.leaflet-layer,
-.leaflet-control-zoom-in,
-.leaflet-control-zoom-out,
-.leaflet-control-attribution {
-  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(95%);
-}
-
-.leaflet-container {
-  background-color: #272834;
 }

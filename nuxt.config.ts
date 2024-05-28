@@ -21,7 +21,6 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@nuxt/image",
     "@pinia/nuxt",
-    "nuxt3-leaflet",
     "@hebilicious/vue-query-nuxt",
   ],
   tailwindcss: {

@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/vue-query";
 import { getStatistic } from "../api/statisticApi";
+import type { Statistic } from "~/types/Statistic";
 
 export const useGetStatistic = () => {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<Statistic>({
     queryKey: ["getStatistic"],
     queryFn: getStatistic,
   });

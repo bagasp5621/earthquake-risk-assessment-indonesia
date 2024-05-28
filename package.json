@@ -14,16 +14,17 @@
     "@nuxtjs/tailwindcss": "^6.11.2",
     "@pinia/nuxt": "^0.5.1",
     "nuxt": "^3.10.0",
-    "nuxt3-leaflet": "^1.0.12",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5"
   },
   "dependencies": {
     "@hebilicious/vue-query-nuxt": "^0.3.0",
     "@tanstack/vue-query": "^5.29.0",
+    "@types/chart.js": "^2.9.41",
+    "@vueuse/core": "^10.9.0",
     "axios": "^1.6.8",
     "chart.js": "^4.4.2",
-    "leaflet": "^1.9.4",
+    "ol": "^9.1.0",
     "pinia": "^2.1.7"
   }
 }

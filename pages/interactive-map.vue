@@ -1,9 +1,15 @@
-<script setup lang="ts">
-import type { Maps } from "#build/components";
+<script lang="ts">
+import MapsInteractive from "../components/maps/Interactive.vue";
+
+export default {
+  components: {
+    MapsInteractive,
+  },
+};
 </script>
 
 <template>
-  <div class="flex justify-center items-center">
-    <Maps />
+  <div>
+    <MapsInteractive />
   </div>
 </template>
