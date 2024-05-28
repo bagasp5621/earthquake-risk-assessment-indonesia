@@ -5,7 +5,7 @@ export default {
   name: "SummaryStat",
   props: {
     statistics: {
-      type: Object as PropType<Statistic | undefined>,
+      type: Object as PropType<Statistic | null>,
       required: true,
     },
   },
