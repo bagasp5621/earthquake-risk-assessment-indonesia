@@ -1,31 +1,11 @@
 <script lang="ts">
+import { defineComponent, toRaw } from "vue";
 import type { PropType } from "vue";
 import type { Statistic } from "~/types/Statistic";
-import { Bar } from "vue-chartjs";
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-} from "chart.js";
-import { _backgroundColor } from "#tailwind-config/theme";
+import { Chart } from "chart.js/auto";
 
-ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale
-);
-ChartJS.defaults.borderColor = "#DDDDDD";
-
-export default {
+export default defineComponent({
   name: "BarChart",
-  components: { Bar },
   props: {
     statistics: {
       type: Object as PropType<Statistic | null>,
@@ -34,6 +14,7 @@ export default {
   },
   data() {
     return {
+      datasetStatistic: "avgMag",
       chartOptions: {
         responsive: true,
         normalized: true,
@@ -53,39 +34,122 @@ export default {
           },
         },
       },
-      datasetStatistic: "avgMag",
+      avgMagChartInstance: null as Chart | null,
+      avgDepthChartInstance: null as Chart | null,
+      totalChartInstance: null as Chart | null,
     };
   },
-  computed: {
-    chartData() {
-      const statisticsRaw = toRaw(this.statistics)?.data;
-      if (!statisticsRaw) return { labels: [], datasets: [] };
+  mounted() {
+    this.renderCharts(this.statistics);
 
-      let labels = [];
-      let data = [];
-      for (const statistic of statisticsRaw) {
-        labels.push(statistic.label);
-        data.push(statistic.statistics.averageMagnitude);
-
-        switch (this.datasetStatistic) {
-          case "avgMag":
-            data.push(statistic.statistics.averageMagnitude);
-            break;
-          case "avgDepth":
-            data.push(statistic.statistics.averageDepth);
-            break;
-          case "total":
-            data.push(statistic.statistics.totalEarthquakes);
-            break;
-          default:
-            data.push(statistic.statistics.averageMagnitude);
+    // Watch for changes in datasetStatistic and update the chart
+    this.$watch(
+      () => this.datasetStatistic,
+      (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+          this.toggleCharts();
         }
       }
+    );
 
-      return { labels, datasets: [{ data, backgroundColor: "#8ED1FE" }] };
+    // Optionally watch for changes in statistics and update the charts
+    this.$watch(
+      () => this.statistics,
+      (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+          this.renderCharts(newVal);
+        }
+      },
+      { deep: true }
+    );
+  },
+  methods: {
+    toggleCharts() {
+      const avgMagCanvas = this.$refs.avgMagChart as HTMLCanvasElement;
+      const avgDepthCanvas = this.$refs.avgDepthChart as HTMLCanvasElement;
+      const totalCanvas = this.$refs.totalChart as HTMLCanvasElement;
+
+      avgMagCanvas.style.display =
+        this.datasetStatistic === "avgMag" ? "block" : "none";
+      avgDepthCanvas.style.display =
+        this.datasetStatistic === "avgDepth" ? "block" : "none";
+      totalCanvas.style.display =
+        this.datasetStatistic === "total" ? "block" : "none";
+    },
+    renderCharts(statistics: Statistic | null) {
+      const stats = toRaw(statistics)?.data ?? [];
+
+      const createChartData = (data: number[]) => {
+        return {
+          labels,
+          datasets: [
+            {
+              data,
+              backgroundColor: "#8ED1FE",
+              borderColor: "#8ED1FE",
+              hoverBackgroundColor: "#1D3748",
+            },
+          ],
+        };
+      };
+
+      const labels = stats.map((statistic) => statistic.label);
+      const avgMag = stats.map(
+        (statistic) => statistic.statistics.averageMagnitude
+      );
+      const avgDepth = stats.map(
+        (statistic) => statistic.statistics.averageDepth
+      );
+      const total = stats.map(
+        (statistic) => statistic.statistics.totalEarthquakes
+      );
+
+      const avgMagData = createChartData(avgMag);
+      const avgDepthData = createChartData(avgDepth);
+      const totalData = createChartData(total);
+
+      const createChart = (ctx: CanvasRenderingContext2D | null, data: any) => {
+        if (ctx) {
+          if (this.avgMagChartInstance) {
+            this.avgMagChartInstance.destroy();
+          }
+          new Chart(ctx, {
+            type: "bar",
+            data,
+            options: this.chartOptions,
+          });
+        }
+      };
+
+      createChart(
+        (this.$refs.avgMagChart as HTMLCanvasElement)?.getContext("2d"),
+        avgMagData
+      );
+      createChart(
+        (this.$refs.avgDepthChart as HTMLCanvasElement)?.getContext("2d"),
+        avgDepthData
+      );
+      createChart(
+        (this.$refs.totalChart as HTMLCanvasElement)?.getContext("2d"),
+        totalData
+      );
+
+      this.toggleCharts();
     },
   },
-};
+  beforeUnmount() {
+    // Cleanup chart instances on component unmount
+    if (this.avgMagChartInstance) {
+      this.avgMagChartInstance.destroy();
+    }
+    if (this.avgDepthChartInstance) {
+      this.avgDepthChartInstance.destroy();
+    }
+    if (this.totalChartInstance) {
+      this.totalChartInstance.destroy();
+    }
+  },
+});
 </script>
 
 <template>
@@ -113,6 +177,13 @@ export default {
     >
       Total Earthquake
     </button>
+    <div class="my-8">
+      <canvas v-show="datasetStatistic === 'avgMag'" ref="avgMagChart"></canvas>
+      <canvas
+        v-show="datasetStatistic === 'avgDepth'"
+        ref="avgDepthChart"
+      ></canvas>
+      <canvas v-show="datasetStatistic === 'total'" ref="totalChart"></canvas>
+    </div>
   </div>
-  <Bar id="earthquake-statistics" :options="chartOptions" :data="chartData" />
 </template>

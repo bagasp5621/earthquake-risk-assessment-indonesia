@@ -20,11 +20,11 @@
   "dependencies": {
     "@hebilicious/vue-query-nuxt": "^0.3.0",
     "@tanstack/vue-query": "^5.29.0",
+    "@types/chart.js": "^2.9.41",
     "@vueuse/core": "^10.9.0",
     "axios": "^1.6.8",
     "chart.js": "^4.4.2",
     "ol": "^9.1.0",
-    "pinia": "^2.1.7",
-    "vue-chartjs": "^5.3.1"
+    "pinia": "^2.1.7"
   }
 }
