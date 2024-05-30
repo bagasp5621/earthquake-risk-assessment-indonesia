@@ -9,20 +9,10 @@ import Point from "ol/geom/Point";
 import VectorSource from "ol/source/Vector";
 import HeatmapLayer from "ol/layer/Heatmap";
 import type { Coordinate } from "ol/coordinate";
+import type { Earthquake, EarthquakeData } from "~/types/Earthquake";
+import { getHazard } from "~/api/hazardApi";
 
 const center = fromLonLat([119.8, -4.44]);
-
-interface Earthquake {
-  earthquakes: {
-    latitude: number;
-    longitude: number;
-    magnitude: number;
-    depth: number;
-    datetime: string;
-    weight: number;
-  }[];
-}
-[];
 
 interface ClusterBoundaries {
   minLat: number;
@@ -39,13 +29,14 @@ export default {
       lng: 0,
       isMounted: false,
       showModal: false,
+      isLoading: false,
+      earthquakeData: null as Earthquake | null,
       map: undefined as Map | undefined,
-      clickedClusterData: undefined as Earthquake | undefined,
+      clickedClusterData: undefined as EarthquakeData | undefined,
     };
   },
   mounted() {
     this.initMap();
-    this.mapDarkMode();
     this.isMounted = true;
   },
   beforeUnmount() {
@@ -54,134 +45,81 @@ export default {
     }
   },
   methods: {
-    initMap() {
-      const data = [
-        {
-          earthquakes: [
-            {
-              latitude: -6.7637,
-              longitude: 129.36919,
-              magnitude: 6.2467558,
-              depth: 10,
-              weight: 1,
-              datetime: "9 Februari 2009",
-            },
-            {
-              latitude: -6.1811867,
-              longitude: 130.50633,
-              magnitude: 7.1988274,
-              depth: 10,
-              weight: 1,
-              datetime: "9 Februari 2009",
-            },
-            {
-              latitude: -5.3607016,
-              longitude: 131.40625,
-              magnitude: 6.3083327,
-              depth: 10,
-              weight: 1,
-              datetime: "9 Februari 2009",
-            },
-            {
-              latitude: -7.4897013,
-              longitude: 128.8015,
-              magnitude: 6.3561951,
-              depth: 10,
-              weight: 1,
-              datetime: "9 Februari 2009",
-            },
-          ],
-        },
-        {
-          earthquakes: [
-            {
-              latitude: 1.217826962,
-              longitude: 102.0359344,
-              magnitude: 6.359391179,
-              depth: 10,
-              weight: 1,
-              datetime: "9 Februari 2009",
-            },
-            {
-              latitude: 0.2970204353,
-              longitude: 103.7073822,
-              magnitude: 6.255845165,
-              depth: 10,
-              weight: 1,
-              datetime: "9 Februari 2009",
-            },
-            {
-              latitude: 2.25249052,
-              longitude: 104.653717,
-              magnitude: 6.077113131,
-              depth: 10,
-              weight: 1,
-              datetime: "9 Februari 2009",
-            },
-            {
-              latitude: -0.3118103445,
-              longitude: 103.9930115,
-              magnitude: 6.037962594,
-              depth: 10,
-              weight: 1,
-              datetime: "9 Februari 2009",
-            },
-          ],
-        },
-      ];
+    async initMap() {
+      this.isLoading = true;
+      try {
+        const data = await getHazard();
+        this.earthquakeData = data;
 
-      const features: Feature<Point>[] = data.flatMap((cluster) =>
-        cluster.earthquakes.map((earthquake) => {
-          return new Feature({
-            geometry: new Point(
-              fromLonLat([earthquake.longitude, earthquake.latitude])
-            ),
-            magnitude: earthquake.magnitude,
-            weight: earthquake.weight,
-          });
-        })
-      );
+        const features: Feature<Point>[] | undefined = data?.clusters.flatMap(
+          (cluster) =>
+            cluster.earthquakes.map((earthquake) => {
+              return new Feature({
+                geometry: new Point(
+                  fromLonLat([earthquake.longitude, earthquake.latitude])
+                ),
+                magnitude: earthquake.magnitude,
+                weight: 1,
+              });
+            })
+        );
 
-      const vectorSource = new VectorSource({
-        features: features,
-      });
-      const mapElement = this.$refs.map as HTMLElement;
-      this.map = new Map({
-        target: mapElement,
-        layers: [
-          new TileLayer({
-            source: new OSM(),
-          }),
-          new HeatmapLayer({
-            source: vectorSource,
-            blur: 20,
-            radius: 15,
-          }),
-        ],
-        view: new View({
-          center: center,
-          zoom: 5.3,
-        }),
-        controls: [],
-      });
-
-      this.map?.on("click", (event) => {
-        const clickCoordinate = event.coordinate; // Get click coordinates
-
-        // Iterate through each area cluster
-        data.forEach((cluster) => {
-          const clusterBoundaries = this.computeClusterBoundaries(cluster); // Compute boundaries
-
-          if (
-            this.isClickWithinClusterBounds(clickCoordinate, clusterBoundaries)
-          ) {
-            this.showModal = true;
-            this.clickedClusterData = cluster;
-          }
+        const vectorSource = new VectorSource({
+          features: features,
         });
-      });
+        const mapElement = this.$refs.map as HTMLElement;
+        this.map = new Map({
+          target: mapElement,
+          layers: [
+            new TileLayer({
+              source: new OSM(),
+            }),
+            new HeatmapLayer({
+              source: vectorSource,
+              blur: 25,
+              radius: 18,
+            }),
+          ],
+          view: new View({
+            center: center,
+            zoom: 5.3,
+          }),
+          controls: [],
+        });
+
+        this.map?.on("click", (event) => {
+          const clickCoordinate = event.coordinate; // Get click coordinates
+
+          // Iterate through each area cluster
+          data?.clusters.forEach((cluster) => {
+            const clusterBoundaries = this.computeClusterBoundaries(cluster); // Compute boundaries
+
+            if (
+              this.isClickWithinClusterBounds(
+                clickCoordinate,
+                clusterBoundaries
+              )
+            ) {
+              this.showModal = true;
+              this.clickedClusterData = cluster;
+            }
+          });
+        });
+
+        this.map?.on("postcompose", () => {
+          const canvas = document.querySelector("canvas");
+          canvas
+            ? (canvas.style.filter =
+                "invert(100%) hue-rotate(200deg) brightness(100%) contrast(100%)")
+            : "";
+        });
+      } catch (error) {
+        console.error("Error fetching interactive data:", error);
+      } finally {
+        this.isLoading = false;
+      }
     },
-    computeClusterBoundaries(cluster: Earthquake) {
+    computeClusterBoundaries(cluster: EarthquakeData) {
       let minLat = Infinity,
         maxLat = -Infinity;
       let minLon = Infinity,
@@ -219,14 +157,10 @@ export default {
         clickCoordinateLL[1] <= maxLat
       );
     },
-    mapDarkMode() {
-      this.map?.on("postcompose", () => {
-        const canvas = document.querySelector("canvas");
-        canvas
-          ? (canvas.style.filter =
-              "invert(100%) hue-rotate(200deg) brightness(100%) contrast(100%)")
-          : "";
-      });
+
+    handleCloseModal() {
+      this.showModal = false;
+      this.clickedClusterData = undefined;
     },
   },
 };
@@ -240,8 +174,9 @@ export default {
     <div v-if="isMounted">
       <MapsHazardModal
         v-if="showModal"
+        @close-modal="handleCloseModal"
         :cluster="clickedClusterData"
-        class="absolute inset-0 flex z-10 max-h-[10vh] max-w-[20vh] m-4"
+        class="absolute inset-0 flex z-10 m-4 rounded-xl overflow-y-auto max-w-[50vh]"
       />
     </div>
     <div v-else class="h-[55.75rem]"><LoadingSkeletonMaps /></div>
@@ -251,6 +186,8 @@ export default {
 <!-- todo 
 1. initiate openlayers map✅
 2. implement heatmap with dummy data✅ note: centroid are excluded
-3. implement clickable heatmap with dummy data (resulting modal popup) 
-4. integration with api
+3. implement clickable heatmap with dummy data (resulting modal popup) ✅
+4. enhance api, add new column to endpoint ✅
+5. slicing modal ✅
+6. integration with api✅
 -->
