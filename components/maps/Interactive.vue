@@ -50,6 +50,7 @@ export default {
           center: center,
           zoom: 5.3,
         }),
+        controls: [],
       });
     },
     mapDarkMode() {

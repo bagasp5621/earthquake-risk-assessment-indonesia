@@ -43,7 +43,7 @@ export default defineComponent({
       const score = risk?.dangerScore;
 
       const data = {
-        labels: ["Small", "Medium", "High", "Danger"],
+        labels: ["Small", "Medium", "High", "Very High"],
         datasets: [
           {
             data: [score?.small, score?.medium, score?.high, score?.danger],
