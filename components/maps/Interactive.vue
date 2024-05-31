@@ -28,8 +28,8 @@ export default {
   mounted() {
     this.initMap();
     this.mapDarkMode();
-    this.isMounted = true;
     this.mapOverlay();
+    this.isMounted = true;
   },
   beforeUnmount() {
     if (this.map) {
@@ -92,8 +92,6 @@ export default {
         "EPSG:3857",
         "EPSG:4326"
       );
-
-      console.log(coordinate);
 
       this.lat = latitude;
       this.lng = longitude;
