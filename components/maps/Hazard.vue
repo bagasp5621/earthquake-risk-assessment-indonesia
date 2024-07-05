@@ -176,7 +176,11 @@ export default {
         v-if="showModal"
         @close-modal="handleCloseModal"
         :cluster="clickedClusterData"
-        class="absolute inset-0 flex z-10 m-4 rounded-xl overflow-y-auto max-w-[60vh]"
+        class="absolute inset-0 flex z-10 m-4 rounded-xl overflow-y-auto max-w-[80vh]"
+      />
+      <MapsHazardFilterModal
+        v-if="!showModal"
+        class="absolute flex z-10 m-4 rounded-xl overflow-y-auto"
       />
     </div>
     <div v-else class="h-[55.75rem]"><LoadingSkeletonMaps /></div>

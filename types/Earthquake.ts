@@ -9,6 +9,7 @@ export interface EarthquakeData {
     longitude: number;
     magnitude: number;
     depth: number;
+    phasecount: number;
     datetime: number;
     weight: number;
   }[];
