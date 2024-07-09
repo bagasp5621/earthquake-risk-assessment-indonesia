@@ -1,4 +1,6 @@
 <script lang="ts">
+import Icon from "./icon/icons.vue";
+
 export default {
   props: {
     item: Object,
@@ -8,6 +10,7 @@ export default {
       return this.$route.path === route;
     },
   },
+  components: { Icon },
 };
 </script>
 
@@ -18,11 +21,7 @@ export default {
       class="flex p-4 hover:bg-[#3c4246]"
       :class="{ 'bg-[#3c4246]': isActiveRoute(item?.route) }"
     >
-      <img
-        :src="isActiveRoute(item?.route) ? item?.image : item?.inactiveImage"
-        alt="maps"
-        class="w-10"
-      />
+      <Icon :isOpen="isActiveRoute(item?.route)" :route="item?.route" />
       <p
         class="flex flex-col justify-center pl-5 font-semibold"
         :class="{ 'text-[#8ED1FE]': isActiveRoute(item?.route) }"

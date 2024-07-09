@@ -11,6 +11,9 @@ import HeatmapLayer from "ol/layer/Heatmap";
 import type { Coordinate } from "ol/coordinate";
 import type { Earthquake, EarthquakeData } from "~/types/Earthquake";
 import { getHazard } from "~/api/hazardApi";
+import { useContentStore } from "~/store/ContentState";
+import { useHazardStore } from "~/store/HazardState";
+import { Vector } from "ol/source";
 
 const center = fromLonLat([119.8, -4.44]);
 
@@ -25,14 +28,93 @@ export default {
   name: "MapsHazard",
   data() {
     return {
-      lat: 0,
-      lng: 0,
       isMounted: false,
-      showModal: false,
       isLoading: false,
-      earthquakeData: null as Earthquake | null,
-      map: undefined as Map | undefined,
-      clickedClusterData: undefined as EarthquakeData | undefined,
+    };
+  },
+  setup() {
+    // initiate variable for the app
+    const contentStore = useContentStore();
+    const hazardState = useHazardStore();
+    const earthquakeData = ref(null as Earthquake | null);
+    const clickedClusterData = ref(undefined as EarthquakeData | undefined);
+    const map = ref(undefined as Map | undefined);
+    const mapDupe = ref(undefined as Map | undefined);
+    const mapDupeWithHazard = ref(undefined as Map | undefined);
+    const showModal = ref(false as Boolean);
+    const lat = ref(0 as Number);
+    const lng = ref(0 as Number);
+    const clickListener = ref(null as ((event: any) => void) | null);
+
+    watch(
+      () => hazardState.hazard,
+      (newHazard) => {
+        if (newHazard) {
+          if (map.value instanceof HTMLElement) {
+            map.value = mapDupe.value;
+          }
+
+          const features = hazardState.hazard?.earthquakes.map((data) => {
+            return new Feature({
+              geometry: new Point(fromLonLat([data.longitude, data.latitude])),
+              weight: data.weight,
+            });
+          });
+
+          const vectorSource = new Vector({
+            features: features,
+          });
+
+          const layer = new HeatmapLayer({
+            source: vectorSource,
+            blur: 25,
+            radius: 18,
+          });
+
+          map.value?.addLayer(layer);
+          clickedClusterData.value = hazardState.hazard;
+          showModal.value = true;
+        }
+      }
+    );
+
+    watch(
+      () => contentStore.content,
+      (newContent) => {
+        if (!newContent) {
+          if (map.value instanceof HTMLElement) {
+            map.value = mapDupeWithHazard.value;
+          }
+
+          const layers = map?.value?.getLayers();
+          const layerArray = layers?.getArray();
+
+          if (layerArray) {
+            for (const layer of layerArray) {
+              if (layer instanceof HeatmapLayer) {
+                map?.value?.removeLayer(layer);
+                break;
+              }
+            }
+          }
+          // remove click event
+          if (clickListener.value) {
+            map?.value?.un("click", clickListener.value);
+          }
+        }
+      }
+    );
+
+    return {
+      earthquakeData,
+      clickedClusterData,
+      map,
+      mapDupe,
+      mapDupeWithHazard,
+      clickListener,
+      showModal,
+      lat,
+      lng,
     };
   },
   mounted() {
@@ -67,7 +149,9 @@ export default {
         const vectorSource = new VectorSource({
           features: features,
         });
+
         const mapElement = this.$refs.map as HTMLElement;
+
         this.map = new Map({
           target: mapElement,
           layers: [
@@ -87,13 +171,15 @@ export default {
           controls: [],
         });
 
-        this.map?.on("click", (event) => {
-          const clickCoordinate = event.coordinate; // Get click coordinates
+        // if needed for empty map without heatmap
+        this.mapDupe = this.map;
 
+        // click event
+        this.clickListener = (event) => {
+          const clickCoordinate = event.coordinate; // Get click coordinates
           // Iterate through each area cluster
           data?.clusters.forEach((cluster) => {
             const clusterBoundaries = this.computeClusterBoundaries(cluster); // Compute boundaries
-
             if (
               this.isClickWithinClusterBounds(
                 clickCoordinate,
@@ -104,8 +190,13 @@ export default {
               this.clickedClusterData = cluster;
             }
           });
-        });
+        };
 
+        this.map?.on("click", this.clickListener);
+
+        this.mapDupeWithHazard = this.map;
+
+        // dark mode
         this.map?.on("postcompose", () => {
           const canvas = document.querySelector("canvas");
           canvas
@@ -141,7 +232,6 @@ export default {
       boundaries: ClusterBoundaries
     ) {
       const { minLat, maxLat, minLon, maxLon } = boundaries;
-      // fromLonLat(minLon);
 
       const clickCoordinateLL = transform(
         clickCoordinate,
@@ -157,7 +247,6 @@ export default {
         clickCoordinateLL[1] <= maxLat
       );
     },
-
     handleCloseModal() {
       this.showModal = false;
       this.clickedClusterData = undefined;
@@ -176,7 +265,11 @@ export default {
         v-if="showModal"
         @close-modal="handleCloseModal"
         :cluster="clickedClusterData"
-        class="absolute inset-0 flex z-10 m-4 rounded-xl overflow-y-auto max-w-[60vh]"
+        class="absolute inset-0 flex z-10 m-4 rounded-xl overflow-y-auto max-w-[80vh]"
+      />
+      <MapsHazardFilterModal
+        v-if="!showModal"
+        class="absolute flex justify-center z-10 m-4 rounded-xl overflow-y-auto"
       />
     </div>
     <div v-else class="h-[55.75rem]"><LoadingSkeletonMaps /></div>

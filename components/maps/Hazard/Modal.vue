@@ -47,6 +47,7 @@ export default {
   },
 };
 </script>
+
 <template>
   <div class="bg-[#1D1F25] flex flex-col overflow-y-auto">
     <div class="flex justify-between">
@@ -70,11 +71,15 @@ export default {
       </div>
       <div class="flex justify-between m-2">
         <div>Average Magnitude</div>
-        <div class="text-[#FF7E35] font-bold">{{ cluster?.avgMag.toFixed(2) }} RS</div>
+        <div class="text-[#FF7E35] font-bold">
+          {{ cluster?.avgMag.toFixed(2) }} RS
+        </div>
       </div>
       <div class="flex justify-between m-2">
         <div>Average Depth</div>
-        <div class="text-[#FF7E35] font-bold">{{ cluster?.avgDepth.toFixed(1) }} Km</div>
+        <div class="text-[#FF7E35] font-bold">
+          {{ cluster?.avgDepth.toFixed(1) }} Km
+        </div>
       </div>
     </div>
     <!-- table -->
@@ -93,6 +98,9 @@ export default {
               Longitude
             </th>
             <th class="border-t border-b border-[#5C5C5C] text-sm">Datetime</th>
+            <th class="border-t border-b border-[#5C5C5C] text-sm">
+              Vibrations
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -114,6 +122,9 @@ export default {
             </td>
             <td class="border-b border-[#5C5C5C] text-sm">
               {{ formatDate(item.datetime, false) }}
+            </td>
+            <td class="border-b border-[#5C5C5C] text-sm">
+              {{ item.phasecount }}
             </td>
           </tr>
         </tbody>
