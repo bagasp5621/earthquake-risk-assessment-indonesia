@@ -54,6 +54,18 @@ export default {
             map.value = mapDupe.value;
           }
 
+          const layers = map?.value?.getLayers();
+          const layerArray = layers?.getArray();
+
+          if (layerArray) {
+            for (const layer of layerArray) {
+              if (layer instanceof HeatmapLayer) {
+                map?.value?.removeLayer(layer);
+                break;
+              }
+            }
+          }
+
           const features = hazardState.hazard?.earthquakes.map((data) => {
             return new Feature({
               geometry: new Point(fromLonLat([data.longitude, data.latitude])),
