@@ -34,13 +34,13 @@ export default {
           title: "Total Years",
           value: summary?.totalYears.years,
           pronounce: "Years",
-          description: `The data taken starts from ${summary?.totalYears.firstData} to ${summary?.totalYears.lastData}. making a total of ${summary?.totalYears.years} years.`,
+          description: `The data taken starts from ${summary?.totalYears.firstData} to ${summary?.totalYears.lastData}. Making a total of ${summary?.totalYears.years} years.`,
         },
         {
           title: "Largest Earthquake",
           value: summary?.largestEarthquake.magnitude,
           pronounce: "RS",
-          description: `The largest earthquake occurred in ${summary?.largestEarthquake.location} with a magnitude of ${summary?.largestEarthquake.magnitude} RS (${summary?.largestEarthquake.datetime}). it was measured from November 2008 to April 2024.`,
+          description: `The largest earthquake occurred in ${summary?.largestEarthquake.location} with a magnitude of ${summary?.largestEarthquake.magnitude} RS (${summary?.largestEarthquake.datetime}). it was measured from ${summary?.totalYears.firstData} to ${summary?.totalYears.lastData}.`,
         },
       ];
 
