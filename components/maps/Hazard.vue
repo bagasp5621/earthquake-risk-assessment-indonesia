@@ -1,3 +1,9 @@
+<!-- 
+~~~~ BUG ~~~~ 
+1. If heatmap is clicked or filter is applied, sidebar doesnt work, it makes the main area not changed.
+2. 
+ -->
+
 <script lang="ts">
 import Map from "ol/Map";
 import View from "ol/View";

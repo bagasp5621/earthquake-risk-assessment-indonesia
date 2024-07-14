@@ -49,7 +49,7 @@ export default {
 </script>
 
 <template>
-  <div class="bg-[#1D1F25] flex flex-col overflow-y-auto">
+  <div class="bg-[#1D1F25] flex flex-col overflow-y-auto overflow-x-hidden">
     <div class="flex justify-between">
       <div class="m-4 font-extrabold text-xl">Heatmap Details</div>
       <div class="m-4">
