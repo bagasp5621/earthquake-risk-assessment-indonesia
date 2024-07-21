@@ -139,11 +139,11 @@ export default {
     this.initMap();
     this.isMounted = true;
   },
-  beforeUnmount() {
-    if (this.map) {
-      this.map.setTarget(undefined);
-    }
-  },
+  // beforeUnmount() {
+  //   if (this.map) {
+  //     this.map.setTarget(undefined);
+  //   }
+  // },
   methods: {
     async initMap() {
       this.isLoading = true;
