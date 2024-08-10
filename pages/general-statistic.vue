@@ -29,7 +29,7 @@ watchEffect(async () => {
     <LoadingSkeletonGeneralStats />
   </div>
   <div v-else class="h-full grid-rows-4 gap-4 overflow-hidden">
-    <div class="bg-[#1D1F25] p-5 rounded-xl row-span-1">
+    <div class="hidden md:block bg-[#1D1F25] p-5 rounded-xl row-span-1">
       <p class="text-xl font-bold pb-2">Ringkasan</p>
       <div class="grid grid-cols-4 justify-items-stretch gap-16">
         <GeneralStatisticSummary :statistics="statistics" />

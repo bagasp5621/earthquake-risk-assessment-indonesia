@@ -112,7 +112,7 @@ export default {
   <div>
     <div
       ref="map"
-      class="relative h-[94.2vh] w-full overflow-hidden rounded-2xl"
+      class="relative h-[92.3vh] md:h-[96vh] w-full overflow-hidden md:rounded-2xl"
     >
       <div id="popup">
         <div v-if="isMounted" class="flex">

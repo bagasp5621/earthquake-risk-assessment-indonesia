@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 
 onBeforeMount(() => {
   const router = useRouter();
-  router.push("/risk-map");
+  router.push("/guide");
 });
 </script>
 

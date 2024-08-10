@@ -6,12 +6,12 @@ export const getFilter = async (
   south: number,
   west: number,
   east: number,
-  startDate: number,
-  endDate: number,
   minMag: number,
   maxMag: number,
   minDepth: number,
-  maxDepth: number
+  maxDepth: number,
+  startDate: number,
+  endDate: number
 ): Promise<Filter> => {
   const response = await axios.get<Filter>(
     `http://localhost:4000/v1/earthquake/filter?north=${north}&south=${south}&west=${west}&east=${east}&startDate=${startDate}&endDate=${endDate}&minMag=${minMag}&maxMag=${maxMag}&minDepth=${minDepth}&maxDepth=${maxDepth}`

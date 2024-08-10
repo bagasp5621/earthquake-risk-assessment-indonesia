@@ -6,6 +6,10 @@ export default {
     return {
       sidebarItems: [
         {
+          title: "Guide",
+          route: "/guide",
+        },
+        {
           title: "Risk Map",
           route: "/risk-map",
         },
@@ -28,7 +32,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="flex justify-between md:justify-normal m-4 md:m-0 md:flex-col">
     <SidebarItem
       v-for="(item, index) in sidebarItems"
       :key="index"

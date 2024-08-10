@@ -14,6 +14,7 @@ export default {
       south: -11,
       east: 141,
       west: 95,
+      year: 2024,
       startDate: "",
       endDate: "",
       minMag: 0,
@@ -21,6 +22,7 @@ export default {
       minDepth: 0,
       maxDepth: 1000,
       earthquake: undefined as EarthquakeData | undefined,
+      advanceDateFilter: true as Boolean,
     };
   },
   setup() {
@@ -33,8 +35,7 @@ export default {
     };
   },
   created() {
-    const oneMonthInMillis = 2629743 * 1000;
-    this.startDate = this.formatDate(Date.now() - oneMonthInMillis);
+    this.startDate = this.formatDate(1714521600000); // 1 May 2024
     this.endDate = this.formatDate(1717174800000); // 1 June 2024
   },
   methods: {
@@ -72,17 +73,42 @@ export default {
 
       this.removeContent();
       try {
+        let startDate: number;
+        let endDate: number;
+
+        // check if advance filter is on
+        if (this.advanceDateFilter) {
+          let startEpoch = new Date(this.year, 0, 1);
+          let endEpoch = new Date(this.year, 11, 31);
+
+          startDate = startEpoch.getTime();
+          endDate = endEpoch.getTime();
+
+          if (this.minMag < 5) {
+            this.minMag = 5;
+          }
+        } else {
+          startDate = this.parseDate(this.startDate);
+          endDate = this.parseDate(this.endDate);
+
+          // max one month query
+          const oneMonthMs = endDate - 31 * 24 * 60 * 60 * 1000;
+          startDate = startDate < oneMonthMs ? oneMonthMs : startDate;
+          console.log(startDate);
+          console.log(endDate);
+        }
+
         const filter = await getFilter(
           this.north,
           this.south,
           this.west,
           this.east,
-          this.parseDate(this.startDate),
-          this.parseDate(this.endDate),
           this.minMag,
           this.maxMag,
           this.minDepth,
-          this.maxDepth
+          this.maxDepth,
+          startDate,
+          endDate
         );
 
         let dataToEarthquake: EarthquakeData = {
@@ -107,6 +133,9 @@ export default {
         this.loading = false;
         this.removeFilterModal();
       }
+    },
+    changeAdvanceDateFilter() {
+      this.advanceDateFilter = !this.advanceDateFilter;
     },
   },
 };
@@ -174,35 +203,85 @@ export default {
         />
         <label for="south">South</label>
       </div>
-
-      <!-- Date -->
-      <div class="grid grid-cols-2 text-[#F7F7F7] mx-4 mt-5">
-        <div class="flex flex-col">
-          <label for="startDate">Start Date</label>
-          <input
-            type="date"
-            id="startDate"
-            class="p-2 rounded-xl bg-[#303D45] mr-2 mt-2 focus:outline-none"
-            v-model="startDate"
-            required
-          />
-        </div>
-        <div class="flex flex-col">
-          <label for="endDate">End Date </label>
-          <input
-            type="date"
-            id="endDate"
-            class="p-2 rounded-xl bg-[#303D45] mr-2 mt-2 focus:outline-none"
-            v-model="endDate"
-            required
-          />
+      <div
+        :class="{
+          'bg-[#1D1F25] hidden ': !advanceDateFilter,
+        }"
+        class="m-4"
+      >
+        <label for="years">Choose Year to Select:</label>
+        <div class="my-2">
+          <select
+            v-model="year"
+            name="years"
+            id="years"
+            class="bg-[#303D45] px-3 rounded-xl"
+          >
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+            <option value="2020">2020</option>
+            <option value="2019">2019</option>
+            <option value="2018">2018</option>
+            <option value="2017">2017</option>
+            <option value="2016">2016</option>
+            <option value="2015">2015</option>
+            <option value="2014">2014</option>
+            <option value="2013">2013</option>
+            <option value="2012">2012</option>
+            <option value="2011">2011</option>
+            <option value="2010">2010</option>
+            <option value="2009">2009</option>
+            <option value="2008">2008</option>
+          </select>
         </div>
       </div>
+      <p
+        @click="changeAdvanceDateFilter"
+        class="bg-[#303D45] rounded-sm mx-4 hover:bg-[#435561] flex justify-center cursor-pointer"
+      >
+        <MapsHazardArrow :class="{ 'rotate-180': advanceDateFilter }" />
+      </p>
 
-      <span class="text-xs mx-4 mt-5"> *Max 31 days</span>
+      <div
+        :class="{
+          'bg-[#1D1F25] hidden': advanceDateFilter,
+        }"
+      >
+        <div class="grid grid-cols-2 text-[#F7F7F7] mx-4 mt-5">
+          <div class="flex flex-col">
+            <label for="startDate">Start Date</label>
+            <input
+              type="date"
+              id="startDate"
+              class="p-2 rounded-xl bg-[#303D45] mr-2 mt-2 focus:outline-none"
+              v-model="startDate"
+              required
+            />
+          </div>
+          <div class="flex flex-col">
+            <label for="endDate">End Date </label>
+            <input
+              type="date"
+              id="endDate"
+              class="p-2 rounded-xl bg-[#303D45] mr-2 mt-2 focus:outline-none"
+              v-model="endDate"
+              required
+            />
+          </div>
+        </div>
+
+        <span class="text-xs mx-4 mt-5"> *Max 31 days</span>
+      </div>
 
       <!-- Magnitude -->
-      <div class="grid grid-cols-2 text-[#F7F7F7] mx-4 mt-5">
+      <div
+        :class="{
+          'bg-[#1D1F25] hidden': advanceDateFilter,
+        }"
+        class="grid grid-cols-2 text-[#F7F7F7] mx-4 mt-5"
+      >
         <div class="flex flex-col">
           <label for="minMag">Min Magnitude</label>
           <input
@@ -214,7 +293,12 @@ export default {
             required
           />
         </div>
-        <div class="flex flex-col">
+        <div
+          :class="{
+            'bg-[#1D1F25] hidden': advanceDateFilter,
+          }"
+          class="flex flex-col"
+        >
           <label for="maxMag">Max Magnitude</label>
           <input
             type="number"
@@ -228,7 +312,12 @@ export default {
       </div>
 
       <!-- Depth -->
-      <div class="grid grid-cols-2 text-[#F7F7F7] mx-4 mt-5">
+      <div
+        :class="{
+          'bg-[#1D1F25] hidden': advanceDateFilter,
+        }"
+        class="grid grid-cols-2 text-[#F7F7F7] mx-4 mt-5"
+      >
         <div class="flex flex-col">
           <label for="minDepth">Min Depth (Km)</label>
           <input
@@ -240,7 +329,12 @@ export default {
             required
           />
         </div>
-        <div class="flex flex-col">
+        <div
+          :class="{
+            'bg-[#1D1F25] hidden': advanceDateFilter,
+          }"
+          class="flex flex-col"
+        >
           <label for="maxDepth">Max Depth (Km)</label
           ><input
             type="number"

@@ -3,6 +3,7 @@ import MapsIcon from "./maps-icon.vue";
 import HeatmapIcon from "./heatmap-icon.vue";
 import PolygonIcon from "./polygon-icon.vue";
 import ChartIcon from "./chart-icon.vue";
+import GuideIcon from "./guide-icon.vue";
 
 export default {
   name: "Icons",
@@ -16,10 +17,15 @@ export default {
       require: true,
     },
   },
-  components: { MapsIcon, HeatmapIcon, PolygonIcon, ChartIcon },
+  components: { GuideIcon, MapsIcon, HeatmapIcon, PolygonIcon, ChartIcon },
 };
 </script>
 <template>
+  <GuideIcon
+    v-if="route === '/guide'"
+    class="max-h-8 max-w-10"
+    :isOpen="isOpen"
+  />
   <MapsIcon
     v-if="route === '/risk-map'"
     class="max-h-8 max-w-10"

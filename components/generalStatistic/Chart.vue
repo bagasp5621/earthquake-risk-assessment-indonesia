@@ -157,7 +157,7 @@ export default defineComponent({
     <button
       @click="datasetStatistic = 'avgMag'"
       :class="{ 'bg-[#303D45] text-[#8ED1FE]': datasetStatistic === 'avgMag' }"
-      class="py-2 px-5 border border-[#303D45] rounded-l-3xl"
+      class="py-2 px-3 text-sm md:py-2 md:px-5 md:text-base border border-[#303D45] rounded-l-3xl"
     >
       Avg. Magnitude
     </button>
@@ -166,14 +166,14 @@ export default defineComponent({
       :class="{
         'bg-[#303D45] text-[#8ED1FE]': datasetStatistic === 'avgDepth',
       }"
-      class="py-2 px-5 border border-[#303D45]"
+      class="py-2 px-3 text-sm md:py-2 md:px-5 md:text-base border border-[#303D45]"
     >
       Avg. Depth
     </button>
     <button
       @click="datasetStatistic = 'total'"
       :class="{ 'bg-[#303D45] text-[#8ED1FE]': datasetStatistic === 'total' }"
-      class="py-2 px-5 border border-[#303D45] rounded-r-3xl"
+      class="py-2 px-3 text-sm md:py-2 md:px-5 md:text-base border border-[#303D45] rounded-r-3xl"
     >
       Total Earthquake
     </button>

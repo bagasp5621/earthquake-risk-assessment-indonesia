@@ -276,7 +276,7 @@ export default {
 <template>
   <div
     ref="map"
-    class="relative h-[94.2vh] w-full overflow-hidden rounded-2xl z-0"
+    class="relative h-[92.3vh] md:h-[96vh] w-full overflow-hidden md:rounded-2xl z-0"
   >
     <div v-if="isMounted">
       <MapsHazardModal
