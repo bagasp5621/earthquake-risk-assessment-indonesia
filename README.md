@@ -1,4 +1,5 @@
 # Repository ini adalah hasil dari pengembangan aplikasi untuk skripsi saya
+This is only frontend, check my backend repository on my profile
 
 # Nuxt 3 Minimal Starter
 
