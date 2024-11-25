@@ -1,5 +1,5 @@
 # Repository ini adalah hasil dari pengembangan aplikasi untuk skripsi saya
-This is only frontend, check my backend repository on my profile
+This is only frontend, check my backend repository [here](https://github.com/bagasp5621/backend-earthquake)
 
 # Nuxt 3 Minimal Starter
 
